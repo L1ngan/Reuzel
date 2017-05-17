@@ -63,8 +63,9 @@ void ThreadPool::stop()
 size_t ThreadPool::queueSize() const
 {
     pthread_mutex_lock(&mutex_);
-    return taskQueue_.size();
+    size_t size = taskQueue_.size();
     pthread_mutex_unlock(&mutex_);
+    return size;
 }
 
 void ThreadPool::addTask(const Task &task)
