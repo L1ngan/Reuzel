@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Jiawei Feng
 //
 
-#ifndef REUZEL_H
-#define REUZEL_H
+#ifndef THREADPOOL_H
+#define THREADPOOL_H
 
 #include <pthread.h>
 #include <vector>
