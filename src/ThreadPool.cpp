@@ -58,6 +58,10 @@ void ThreadPool::stop()
 
     std::for_each(threads_.begin(), threads_.end(),
                    std::bind(&Thread::join, std::placeholders::_1));
+
+    pthread_mutex_destroy(&mutex_);
+    pthread_cond_destroy(&notEmpty_);
+    pthread_cond_destroy(&notFull_);
 }
 
 size_t ThreadPool::queueSize() const

@@ -53,7 +53,6 @@ int Thread::join()
 
 void Thread::runInThread()
 {
-    // FIXME: add assert
     try {
         func_();
     }
