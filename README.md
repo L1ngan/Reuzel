@@ -15,20 +15,19 @@ The thread pool uses C++11 syntax and POSIX Threads so if you compile with g++ o
     g++ -std=c++11 ThreadPool.cpp Thread.cpp example.cpp -lpthread -o example
 
 Then run the executable like this:
-
     ./example
 
 if you want to run the test example:
-
     make
     ./Reuzel
 
 
 ## Basic Usage
 
-1. Include the header file in your source file
-2. Create a thread pool, set max size of task queue, and create worker threads
-3. Add task to the pool
+1. Include the header file in your source file:'#include "ThreadPool.h"'
+2. Create a thread pool:'ThreadPool thpool'
+3. Set max size of task queue, and create worker threads:'setMaxQueueSize(), start()'
+4. Add task to the pool:'addTask()'
 
 
 ## Contribution
