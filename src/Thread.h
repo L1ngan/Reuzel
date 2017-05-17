@@ -21,7 +21,8 @@ namespace Reuzel {
         explicit Thread(const ThreadFunc& func);
         ~Thread();
 
-        //FIXME: add copy ctr and copy opr
+        Thread(const Thread&) = delete;
+        Thread &operator=(const Thread&) = delete;
 
         void start();
         int join();
