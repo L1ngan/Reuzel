@@ -5,54 +5,40 @@
 //
 
 #include "../src/ThreadPool.h"
-#include <iostream>
+#include <stdio.h>
 #include <pthread.h>
 #include <string>
 #include <unistd.h>
 
-#include <sys/types.h>
-
-pthread_mutex_t outputMutex= PTHREAD_MUTEX_INITIALIZER;
-
 void print()
 {
-    pthread_mutex_lock(&outputMutex);
-    std::cout << "current pthread = " << pthread_self() << std::endl;
-    pthread_mutex_unlock(&outputMutex);
+    printf("current pthread = %ld\n", pthread_self());
 }
 
 void printString(const std::string &taskId)
 {
-    pthread_mutex_lock(&outputMutex);
-    std::cout << "current pthread = " << pthread_self() << " ";
-    std::cout << taskId << std::endl;
-    usleep(50 * 1000);
-    pthread_mutex_unlock(&outputMutex);
+    printf("current pthread = %ld %s\n", pthread_self(), taskId.c_str());
+    usleep(10 * 1000);
 }
 
 void test(int maxSize)
 {
-    std::cout << "Test ThreadPool with max queue size = "
-              << maxSize << std::endl;
+    printf("Test ThreadPool with max queue size = %d\n", maxSize);
     Reuzel::ThreadPool pool("MainThreadPool");
     pool.setMaxQueueSize(maxSize);
     pool.start(5);
 
-    pthread_mutex_lock(&outputMutex);
-    std::cout << "Adding print task" << std::endl;
-    pthread_mutex_unlock(&outputMutex);
+    printf("Adding print task\n");
     pool.addTask(print);
     pool.addTask(print);
 
-    pthread_mutex_lock(&outputMutex);
-    std::cout << "Adding printString task" << std::endl;
-    pthread_mutex_unlock(&outputMutex);
+    printf("Adding printString tast\n");
     for (int i = 0; i < 100; ++i) {
         std::string taskId("task - ");
         taskId += std::to_string(i);
         pool.addTask(std::bind(printString, taskId));
     }
-    sleep(8);  // wait for all threads join
+    sleep(2);  // Wait until all tasks are taken out and executed.
 
     pool.stop();
 }

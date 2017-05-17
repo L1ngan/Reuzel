@@ -9,7 +9,7 @@
 #include <functional>
 #include <algorithm>
 #include <exception>
-#include <iostream>
+#include <stdio.h>
 
 using namespace Reuzel;
 using std::placeholders::_1;
@@ -138,7 +138,7 @@ void ThreadPool::runInThread()
         }
     }
     catch (const std::exception &e) {
-        std::cerr << "exception caught in ThreadPool" << name_ << std::endl;
+        printf("exception caught in ThreadPool %s\n", name_.c_str());
         abort();
     }
 }

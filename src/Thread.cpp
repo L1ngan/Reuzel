@@ -6,7 +6,7 @@
 
 #include "Thread.h"
 #include <assert.h>
-#include <iostream>
+#include <stdio.h>
 
 using namespace Reuzel;
 
@@ -39,7 +39,7 @@ void Thread::start()
 
     if (pthread_create(&pthreadId_, NULL, startThread, this) != 0) {
         started_ = false;
-        std::cerr << "Failed in pthread_create" << std::endl;
+        printf("Faileed in pthread_create\n");
     }
 }
 
@@ -57,8 +57,7 @@ void Thread::runInThread()
         func_();
     }
     catch (const std::exception &e) {
-        std::cerr << "exception caught in Thread "
-                  << pthreadId_ << std::endl;
+        printf("exception caught in Thread %ld\n", pthreadId_);
         abort();
     }
 }
