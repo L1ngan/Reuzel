@@ -39,8 +39,11 @@ void ThreadPool::start(int numThreads)
     threads_.reserve(numThreads);
 
     for (int i = 0; i < numThreads; ++i) {
-        threads_.push_back(Thread(std::bind(&ThreadPool::runInThread, this)));
-        threads_[i].start();
+        //threads_.push_back(Thread(std::bind(&ThreadPool::runInThread, this)));
+        //threads_[i].start();
+        threads_.push_back(
+            new Thread(std::bind(&ThreadPool::runInThread, this)));
+        threads_[i]->start();
     }
     /*
     if (numThreads == 0 && threadInitCallback_) {
@@ -58,6 +61,8 @@ void ThreadPool::stop()
 
     std::for_each(threads_.begin(), threads_.end(),
                    std::bind(&Thread::join, std::placeholders::_1));
+    std::for_each(threads_.begin(), threads_.end(),
+                    [](Thread *threadPtr) { delete threadPtr; });
 
     pthread_mutex_destroy(&mutex_);
     pthread_cond_destroy(&notEmpty_);
