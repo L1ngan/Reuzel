@@ -5,11 +5,34 @@
 //
 
 #include "Thread.h"
+#include "CurrentThread.h"
 #include <assert.h>
 #include <stdio.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+namespace Reuzel {
+namespace CurrentThread {
+    __thread pid_t t_cachedTid = 0;
+
+    void cacheTid()
+    {
+        if (t_cachedTid == 0) {
+            t_cachedTid = ::syscall(SYS_gettid);
+        }
+    }
+
+    pid_t gettid()
+    {
+        if (t_cachedTid == 0) {
+            cacheTid();
+        }
+        return t_cachedTid;
+    }
+}
+}
 
 using namespace Reuzel;
-
 static void *startThread(void *arg)
 {
     Thread *thread = static_cast<Thread *>(arg);

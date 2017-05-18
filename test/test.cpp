@@ -12,12 +12,13 @@
 
 void print()
 {
-    printf("current pthread = %ld\n", pthread_self());
+    printf("current pthread = %d\n", Reuzel::CurrentThread::gettid());
 }
 
 void printString(const std::string &taskId)
 {
-    printf("current pthread = %ld %s\n", pthread_self(), taskId.c_str());
+    printf("current pthread = %d %s\n",
+            Reuzel::CurrentThread::gettid(), taskId.c_str());
     usleep(10 * 1000);
 }
 

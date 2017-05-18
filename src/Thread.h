@@ -11,7 +11,7 @@
 #include <functional>
 #include <assert.h>
 #include <exception>
-#include <iostream>
+#include "CurrentThread.h"
 
 namespace Reuzel {
     class Thread {
@@ -35,6 +35,11 @@ namespace Reuzel {
         pthread_t pthreadId() const
         {
             return pthreadId_;
+        }
+
+        pid_t threadId() const
+        {
+            return CurrentThread::gettid();
         }
 
         void runInThread();
