@@ -25,9 +25,9 @@ if you want to run the test example:
 ## Basic Usage
 
 1. Include the header file in your source file:`#include "ThreadPool.h"`
-2. Create a thread pool:`ThreadPool thpool`
-3. Set max size of task queue, and create worker threads:`setMaxQueueSize(), start()`
-4. Add task to the pool:`addTask()`
+2. Create a thread pool:`ThreadPool thpool;`
+3. Set max size of task queue, and create worker threads:`setMaxQueueSize(), start();`
+4. Add task to the pool:`addTask();`
 
 
 ## Contribution
