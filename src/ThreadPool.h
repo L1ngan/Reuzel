@@ -14,9 +14,9 @@
 #include <string>
 #include "Thread.h"
 
-using std::string;
-
 namespace Reuzel {
+    using std::string;
+    
     class ThreadPool {
     public:
         typedef std::function<void ()> Task;
