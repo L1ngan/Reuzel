@@ -24,6 +24,9 @@ namespace Reuzel {
             MCHECK(pthread_cond_destroy(&cond_));
         }
 
+        Condition(const Condition &) = delete;
+        Condition &operator=(const Condition&) = delete;
+
         void wait()
         {
             MutexLock::UnassignGuard ug(mutex_);
