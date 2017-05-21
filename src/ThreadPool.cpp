@@ -40,7 +40,7 @@ void ThreadPool::start(int numThreads)
 
     for (int i = 0; i < numThreads; ++i) {
         threads_.push_back(std::unique_ptr<Thread>(
-            new Thread([&](){ runInThread(); } )));
+            new Thread([&](){ this->runInThread(); } )));
         threads_[i]->start();
     }
     /*
