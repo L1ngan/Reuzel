@@ -11,12 +11,13 @@
 #include <vector>
 #include <deque>
 #include <functional>
+#include <memory>
 #include <string>
 #include "Thread.h"
 
 namespace Reuzel {
     using std::string;
-    
+
     class ThreadPool {
     public:
         typedef std::function<void ()> Task;
@@ -61,7 +62,7 @@ namespace Reuzel {
         pthread_cond_t notFull_;
         string name_;
         //Task threadInitCallback_;
-        std::vector<Thread *> threads_;
+        std::vector<std::unique_ptr<Thread>> threads_;
         std::deque<Task> taskQueue_;
         size_t maxQueueSize_;
         bool running_;
