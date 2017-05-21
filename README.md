@@ -2,6 +2,7 @@
 
 Reuzel is a tiny C++ thread pool with these features:
 
+  * Only run on Linux
   * C++11 syntax and POSIX Threads
   * Simple API
   * Starts all threads on creation of the thread pool
