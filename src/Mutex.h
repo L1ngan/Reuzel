@@ -10,7 +10,6 @@
 #include <pthread.h>
 #include <assert.h>
 #include "CurrentThread.h"
-// TODO : Add Condition
 
 #define MCHECK(ret) ({ __typeof(ret) errnum = ret;    \
                        assert(errnum == 0); (void)errnum; })
@@ -55,7 +54,33 @@ namespace Reuzel {
             MCHECK(pthread_mutex_unlock(&mutex_));
         }
 
+        pthread_mutex_t *getPthreadMutex()
+        {
+            return &mutex_;
+        }
+
     private:
+        friend class Condition;
+
+        class UnassignGuard {
+        public:
+            UnassignGuard(MutexLock &owner)
+              : owner_(owner)
+            {
+                owner_.unassignHolder();
+            }
+
+            ~UnassignGuard()
+            {
+                owner_.assignHolder();
+            }
+
+            UnassignGuard(const UnassignGuard&) = delete;
+            UnassignGuard &operator=(const UnassignGuard &) = delete;
+        private:
+            MutexLock &owner_;
+        };
+
         void assignHolder()
         {
             holder_ = CurrentThread::gettid();
