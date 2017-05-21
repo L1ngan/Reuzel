@@ -12,14 +12,12 @@
 #include <stdio.h>
 
 using namespace Reuzel;
-using std::placeholders::_1;
-
 
 ThreadPool::ThreadPool(const string &nameArg)
+  : mutex_(),
+    notEmpty_(mutex_),
+    notFull_(mutex_)
 {
-    pthread_mutex_init(&mutex_, NULL);
-    pthread_cond_init(&notEmpty_, NULL);
-    pthread_cond_init(&notFull_, NULL);
     name_ = nameArg;
     maxQueueSize_ = 0;
     running_ = false;
@@ -52,24 +50,19 @@ void ThreadPool::start(int numThreads)
 
 void ThreadPool::stop()
 {
-    pthread_mutex_lock(&mutex_);
-    running_ = false;
-    pthread_cond_broadcast(&notEmpty_);
-    pthread_mutex_unlock(&mutex_);
-
+    {
+        MutexLockGuard lock(mutex_);
+        running_ = false;
+        notEmpty_.notifyAll();
+    }
     std::for_each(threads_.begin(), threads_.end(),
         [](std::unique_ptr<Thread> &thread) { thread->join(); });
-
-    pthread_mutex_destroy(&mutex_);
-    pthread_cond_destroy(&notEmpty_);
-    pthread_cond_destroy(&notFull_);
 }
 
 size_t ThreadPool::queueSize() const
 {
-    pthread_mutex_lock(&mutex_);
+    MutexLockGuard lock(mutex_);
     size_t size = taskQueue_.size();
-    pthread_mutex_unlock(&mutex_);
     return size;
 }
 
@@ -79,24 +72,22 @@ void ThreadPool::addTask(const Task &task)
         task();
     }
     else {
-        pthread_mutex_lock(&mutex_);
+        MutexLockGuard lock(mutex_);
         while (isFull()) {
-            pthread_cond_wait(&notFull_, &mutex_);
+            notFull_.wait();
         }
         assert(!isFull());
 
         taskQueue_.push_back(task);
-        pthread_cond_signal(&notEmpty_);
-
-        pthread_mutex_unlock(&mutex_);
+        notEmpty_.notify();
     }
 }
 
 ThreadPool::Task ThreadPool::takeTask()
 {
-    pthread_mutex_lock(&mutex_);
+    MutexLockGuard lock(mutex_);
     while (taskQueue_.empty() && running_) {
-        pthread_cond_wait(&notEmpty_, &mutex_);
+        notEmpty_.wait();
     }
 
     Task task;
@@ -105,16 +96,16 @@ ThreadPool::Task ThreadPool::takeTask()
         taskQueue_.pop_front();
 
         if (maxQueueSize_ > 0) {
-            pthread_cond_signal(&notFull_);
+            notFull_.notify();
         }
     }
-    pthread_mutex_unlock(&mutex_);
 
     return task;
 }
 
 bool ThreadPool::isFull() const
 {
+    mutex_.assertLocked();
     return maxQueueSize_ > 0 && taskQueue_.size() >= maxQueueSize_;
 }
 

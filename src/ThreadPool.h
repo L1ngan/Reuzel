@@ -14,6 +14,8 @@
 #include <memory>
 #include <string>
 #include "Thread.h"
+#include "Condition.h"
+#include "Mutex.h"
 
 namespace Reuzel {
     using std::string;
@@ -57,9 +59,9 @@ namespace Reuzel {
         void runInThread();
         Task takeTask();
 
-        mutable pthread_mutex_t mutex_;
-        pthread_cond_t notEmpty_;
-        pthread_cond_t notFull_;
+        mutable MutexLock mutex_;
+        Condition notEmpty_;
+        Condition notFull_;
         string name_;
         //Task threadInitCallback_;
         std::vector<std::unique_ptr<Thread>> threads_;
