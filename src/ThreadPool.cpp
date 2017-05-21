@@ -9,7 +9,6 @@
 #include <functional>
 #include <algorithm>
 #include <exception>
-#include <utility>
 #include <stdio.h>
 
 using namespace Reuzel;
@@ -41,7 +40,7 @@ void ThreadPool::start(int numThreads)
 
     for (int i = 0; i < numThreads; ++i) {
         threads_.push_back(std::unique_ptr<Thread>(
-            new Thread(std::bind(&ThreadPool::runInThread, this))));
+            new Thread([&](){ runInThread(); } )));
         threads_[i]->start();
     }
     /*
@@ -59,7 +58,7 @@ void ThreadPool::stop()
     pthread_mutex_unlock(&mutex_);
 
     std::for_each(threads_.begin(), threads_.end(),
-                   std::bind(&Thread::join, std::placeholders::_1));
+        [](std::unique_ptr<Thread> &thread) { thread->join(); });
 
     pthread_mutex_destroy(&mutex_);
     pthread_cond_destroy(&notEmpty_);
