@@ -5,6 +5,7 @@
 //
 
 #include "../src/ThreadPool.h"
+#include "../src/CountDownLatch.h"
 #include <stdio.h>
 #include <pthread.h>
 #include <string>
@@ -19,7 +20,7 @@ void printString(const std::string &taskId)
 {
     printf("current pthread = %d %s\n",
             Reuzel::CurrentThread::gettid(), taskId.c_str());
-    usleep(10 * 1000);
+    usleep(50 * 1000);
 }
 
 void test(int maxSize)
@@ -39,8 +40,10 @@ void test(int maxSize)
         taskId += std::to_string(i);
         pool.addTask(std::bind(printString, taskId));
     }
-    sleep(2);  // Wait until all tasks are taken out and executed.
 
+    Reuzel::CountDownLatch latch(1);
+    pool.addTask([&](){ latch.countDown(); });
+    latch.wait();
     pool.stop();
 }
 
