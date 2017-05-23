@@ -16,11 +16,11 @@ using namespace Reuzel;
 ThreadPool::ThreadPool(const string &nameArg)
   : mutex_(),
     notEmpty_(mutex_),
-    notFull_(mutex_)
+    notFull_(mutex_),
+    name_(nameArg),
+    maxQueueSize_(0),
+    running_(false)
 {
-    name_ = nameArg;
-    maxQueueSize_ = 0;
-    running_ = false;
 }
 
 ThreadPool::~ThreadPool()
