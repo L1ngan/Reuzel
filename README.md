@@ -35,4 +35,4 @@ if you want to run the test example:
 
 ## Contribution
 
-You are very welcome to contibute!
+You are very welcome to contribute!
