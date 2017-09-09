@@ -25,6 +25,20 @@ if you want to run the test example:
     ./Reuzel
 
 
+### Building with Buck
+
+Reuzel can also be built using [Buck](https://buckbuild.com): 
+
+```
+buck build :reuzel
+```
+
+To run the test example:
+
+```
+buck run test/
+```
+
 ## Basic Usage
 
 1. Include the header file in your source file:`#include "ThreadPool.h"`
